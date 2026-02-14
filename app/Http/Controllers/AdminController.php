@@ -7,9 +7,14 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     public function index()
-    {
-        return view('admin.dashboard');
-    }
+{
+    $ordersCount = \App\Models\Order::count();
+    $productsCount = \App\Models\Product::count();
+    $customersCount = \App\Models\Customer::count();
+    $reviewsCount = \App\Models\Review::count();
+
+    return view('admin.dashboard', compact('ordersCount', 'productsCount', 'customersCount', 'reviewsCount'));
+}
 
     public function products()
     {
@@ -192,5 +197,20 @@ class AdminController extends Controller
         $spec->delete();
 
         return back()->with('success', 'Характеристику видалено.');
+    }
+
+    public function reviews()
+    {
+        $reviews = \App\Models\Review::with(['product', 'customer'])
+                                     ->orderBy('Date', 'desc')
+                                     ->paginate(10);
+                                     
+        return view('admin.reviews.index', compact('reviews'));
+    }
+
+    public function deleteReview($id)
+    {
+        \App\Models\Review::destroy($id);
+        return back()->with('success', 'Відгук успішно видалено!');
     }
 }

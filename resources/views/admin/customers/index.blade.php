@@ -1,6 +1,26 @@
 @extends('layout')
 
 @section('content')
+<style>
+    .pagination { display: flex; list-style: none; padding: 0; gap: 5px; }
+    .page-item .page-link {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        color: #333;
+        text-decoration: none;
+        border-radius: 4px;
+        background: white;
+    }
+    .page-item.active .page-link {
+        background-color: #e74c3c;
+        color: white;
+        border-color: #e74c3c;
+    }
+    .page-item.disabled .page-link { color: #ccc; pointer-events: none; }
+    svg { width: 20px; height: 20px; } 
+    .text-sm { font-size: 0.9em; color: #666; margin-bottom: 10px; display: block;}
+</style>
+
 <div style="padding: 40px; max-width: 1200px; margin: 0 auto;">
     
     <h1 style="margin-bottom: 30px;">Керування клієнтами</h1>
@@ -64,8 +84,8 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 20px;">
-        {{ $customers->links() }}
+    <div class="d-flex justify-content-center mt-4">
+        {{ $customers->links('pagination::bootstrap-5') }}
     </div>
 
 </div>
