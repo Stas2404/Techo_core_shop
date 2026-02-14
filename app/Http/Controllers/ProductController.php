@@ -58,7 +58,8 @@ class ProductController extends Controller
             ->get()
             ->groupBy('Name');
 
-        $products = $query->get();
+        $products = $query->paginate(12)->withQueryString();
+
         $brands = Brand::all();
         $categories = Category::all();
 

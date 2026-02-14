@@ -64,6 +64,24 @@
         background: #ccc; 
         border-radius: 5px;
     }
+
+        .pagination { display: flex; list-style: none; padding: 0; gap: 5px; }
+    .page-item .page-link {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        color: #333;
+        text-decoration: none;
+        border-radius: 4px;
+        background: white;
+    }
+    .page-item.active .page-link {
+        background-color: #e74c3c;
+        color: white;
+        border-color: #e74c3c;
+    }
+    .page-item.disabled .page-link { color: #ccc; pointer-events: none; }
+    svg { width: 20px; height: 20px; } 
+    .text-sm { font-size: 0.9em; color: #666; margin-bottom: 10px; display: block;}
 </style>
 
 <div class="container">
@@ -158,6 +176,9 @@
             @empty
                 <p>Нічого не знайдено.</p>
             @endforelse
+        </div>
+        <div class="d-flex justify-content-center mt-5">
+            {{ $products->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>
