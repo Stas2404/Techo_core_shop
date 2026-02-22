@@ -9,14 +9,31 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\GoogleController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactQuestionMail;
 
 Route::get('/', [ProductController::class, 'home'])->name('home');
 Route::get('/catalog', [ProductController::class, 'index'])->name('catalog');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
-Route::post('/contact/send', function() {
-    return redirect()->back()->with('success', 'Дякуємо! Ваше повідомлення отримано.');
+Route::post('/contact/send', function(Request $request) {
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'message' => 'required|string',
+    ]);
+
+    $contactData = [
+        'name' => $request->name,
+        'email' => $request->email,
+        'message' => $request->message,
+    ];
+
+    Mail::to('stanislavyudin24@gmail.com')->send(new ContactQuestionMail($contactData));
+
+    return redirect()->back()->with('success', 'Дякуємо! Ваше повідомлення успішно відправлено.');
 })->name('contact.send');
 
 Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add.to.cart');

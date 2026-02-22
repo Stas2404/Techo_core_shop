@@ -9,6 +9,8 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderInvoiceMail;
 
 class CheckoutController extends Controller
 {
@@ -84,6 +86,18 @@ class CheckoutController extends Controller
             }
 
             DB::commit();
+
+
+            try {
+                $recipientEmail = Auth::check() ? Auth::user()->Email : $request->Email;
+                
+                if ($recipientEmail) {
+                    Mail::to($recipientEmail)->send(new OrderInvoiceMail($order));
+                }
+            } catch (\Exception $e) {
+            }
+
+
             session()->forget('cart');
 
             return redirect('/')->with('success', 'Замовлення №' . $order->Order_id . ' успішно створено!');

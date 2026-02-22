@@ -26,9 +26,14 @@ class AdminController extends Controller
     public function deleteProduct($id)
     {
         $product = \App\Models\Product::findOrFail($id);
+
+        \Illuminate\Support\Facades\DB::table('specifications')->where('Item_id', $id)->delete();
+        
+        \Illuminate\Support\Facades\DB::table('reviews')->where('Item_id', $id)->delete();
+
         $product->delete();
 
-        return back()->with('success', 'Товар успішно видалено!');
+        return back()->with('success', 'Товар та всі його характеристики успішно видалено!');
     }
 
     public function createProduct()
@@ -160,10 +165,7 @@ class AdminController extends Controller
     public function deleteOrder($id)
     {
         $order = \App\Models\Order::findOrFail($id);
-
-        $order->items()->delete();
-        $product->specifications()->delete();
-
+        \Illuminate\Support\Facades\DB::table('order_items')->where('Order_id', $id)->delete();
         $order->delete();
 
         return back()->with('success', 'Замовлення успішно видалено!');
